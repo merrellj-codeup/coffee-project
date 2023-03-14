@@ -22,11 +22,11 @@ improvements to it.
     name, and the type of roast in a paragraph. Don't display the ids, these are
     only for our application's internal use
 
-- When the page loads, the coffees should be sorted by their ids in ascending
+- When the page loads, the coffeelist should be sorted by their ids in ascending
   order
 
-- Add functionality to search through the coffees by name, and display only the
-  coffees that match the provided search term (You will need to add an input
+- Add functionality to search through the coffeelist by name, and display only the
+  coffeelist that match the provided search term (You will need to add an input
   field to the existing form for this)
 
 - Add functionality to update the displayed coffee as the user types into the
@@ -38,18 +38,18 @@ improvements to it.
 
 - Make your name search case insensitive
 
-- Allow the user to add new coffees to the page
+- Allow the user to add new coffeelist to the page
 
     Create another form on the page that has an input for the coffee name, and
     a select to choose the coffee roast. When the form is submitted, the new
-    coffee should appear on the page. (*Note that any new coffees you add will
+    coffee should appear on the page. (*Note that any new coffeelist you add will
     be lost when you refresh the page, for an extra challenge, research
     how `localStorage` works and see if you can find a way to persist the data*)
 
 - Style it!
 
     The page looks pretty plain as it is, and the refactoring we did above to
-    use `div`s for coffees should give us more flexibility in styling. (*Hint:
+    use `div`s for coffeelist should give us more flexibility in styling. (*Hint:
     the styling shown in the example below can be achieved purely with bootstrap
     classes, that is, without custom CSS*)
 
