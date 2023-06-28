@@ -3,13 +3,32 @@ import {coffees} from './coffeelist.js';
 let roastToggles = document.querySelectorAll(".selection");
 let roastSelection = document.querySelector(".selection.active");
 let tbody = document.querySelector('#coffees');
+const addCoffee = document.querySelector('#add-coffee');
+const searchInput = document.querySelector('#search');
+const pageWrapper = document.querySelector('.page-wrapper');
+const modalBg = document.querySelector('.modal-bg');
+const submitCoffee = document.querySelector('#submit-coffee');
 
 function renderCoffee(coffee) {
+    let coffeeImage;
+    switch (coffee.roast.toLowerCase()) {
+        case "light":
+            coffeeImage = "images/light-roast.jpeg";
+            break;
+        case "medium":
+            coffeeImage = "images/medium-roast.jpeg";
+            break;
+        case "dark":
+            coffeeImage = "images/dark-roast.webp";
+            break;
+        default:
+            coffeeImage = "https://via.placeholder.com/84x70?";
+    }
     let html = `
-        <div class="coffee-card">
+        <div class="coffee-card fade-out">
             <div class="column shrink">
                 <div class="img-wrapper">
-                    <img src="https://via.placeholder.com/84x70?" alt="Coffee 1">
+                    <img src="${coffeeImage}" alt="Coffee image">
                 </div>
             </div>
             <div class="column justify-center">
@@ -60,13 +79,40 @@ function updateCoffees() {
         });
     }
     tbody.innerHTML = renderCoffees(filteredCoffees);
+    setTimeout(function() {
+        const coffeeCards = document.querySelectorAll('.coffee-card');
+        filterRenderedCoffees();
+        coffeeCards.forEach(function(card) {
+            card.classList.remove('fade-out');
+        });
+    }, 100);
 }
 
 function updateRoastSelection(e) {
     roastSelection.classList.remove("active");
     roastSelection = e.target;
     roastSelection.classList.add("active");
-    updateCoffees();
+    const coffeeCards = document.querySelectorAll('.coffee-card');
+    // fade out all coffee cards, THEN update coffees, THEN fade in all coffee cards
+    coffeeCards.forEach(function(card) {
+        card.classList.add('fade-out');
+    });
+    setTimeout(function() {
+        updateCoffees();
+    }, 200);
+}
+
+function filterRenderedCoffees(e) {
+    const coffeeCards = document.querySelectorAll('.coffee-card');
+    const searchValue = searchInput.value.toLowerCase();
+    coffeeCards.forEach(function(card) {
+        const coffeeName = card.querySelector('.coffee-name').innerText.toLowerCase();
+        if (coffeeName.includes(searchValue)) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
 }
 
 updateCoffees(coffees);
@@ -74,3 +120,19 @@ updateCoffees(coffees);
 roastToggles.forEach(function(toggle) {
     toggle.addEventListener('click', updateRoastSelection);
 });
+
+searchInput.addEventListener('input', filterRenderedCoffees);
+
+addCoffee.addEventListener('click', function(e) {
+    e.preventDefault();
+    pageWrapper.classList.toggle('modal-open');
+});
+modalBg.addEventListener('click', function(e) {
+    e.preventDefault();
+    pageWrapper.classList.toggle('modal-open');
+});
+submitCoffee.addEventListener('click', function(e) {
+    e.preventDefault();
+    pageWrapper.classList.toggle('modal-open');
+});
+

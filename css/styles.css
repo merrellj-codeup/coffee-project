@@ -3,13 +3,21 @@
 :root {
     --primary-color: #000000;
     --secondary-color: #BD9459;
-    --bg-color: #F5F2EB;
+    --grey: #333;
+    --bg-color: #EBE8DD;
+}
+html {
+    overflow: hidden;
+    height: 100%;
 }
 body {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     line-height: 1.5;
     color: #333;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Teko', sans-serif;
@@ -20,9 +28,12 @@ h1 {
     font-size: 45px;
     line-height: 100%;
 }
+.page-wrapper {
+    position: relative;
+    background: #EBE8DD;
+}
 #coffee-container.container {
     padding: 50px 0;
-    background: #EBE8DD;
 }
 .coffee-bean-icons {
     display: flex;
@@ -90,11 +101,19 @@ h1 {
     row-gap: 40px;
 }
 .coffee-card {
-    width: 100%;
-    max-width: 400px;
+    width: calc(50% - 10px);
     display: flex;
+    flex: 0 0 auto;
     line-height: 100%;
+    transition: opacity ease .3s;
 }
+.coffee-card.fade-out {
+    opacity: 0;
+}
+.coffee-card.hidden {
+    display: none;
+}
+
 .dotted {
     border-bottom: 1px dotted #000000;
     position: relative;
@@ -131,7 +150,7 @@ h1 {
 }
 .column.selection {
     padding: 10px 20px;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid var(--grey);
     font-weight: 600;
     cursor: pointer;
     transition: all ease .3s;
@@ -143,4 +162,141 @@ h1 {
 .column.selection:hover {
     background: var(--secondary-color);
     color: #fff;
+}
+
+input {
+    width: 100%;
+    min-width: 380px;
+    padding: 10px 20px;
+    border: 1px solid var(--grey);
+    background-color: transparent;
+    outline: none;
+    font-family: inherit;
+    font-weight: 500;
+}
+input::placeholder {
+    font-weight: 300;
+}
+input[type=search] {
+    padding-left: 35px;
+    background-image: url(../images/search.svg);
+    background-repeat: no-repeat;
+    background-position: 10px 50%;
+    background-size: 20px;
+}
+
+.fixed-page-wrapper {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9;
+}
+
+.fixed-page-wrapper>* {
+    pointer-events: all;
+}
+
+.btn {
+    padding: 10px 11.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 15px;
+    border: none;
+    outline: none;
+    background-color: var(--secondary-color);
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.btn .plus {
+    font-size: 35px;
+    line-height: 18px;
+    transition: transform ease .5s;
+    font-weight: 200;
+}
+
+.btn.add-coffee {
+    border-radius: 9999px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    overflow: hidden;
+    transition: width ease .3s;
+    width: 42px;
+    white-space: nowrap;
+    justify-content: start;
+}
+.btn.add-coffee:hover {
+    width: 174px;
+}
+.btn.add-coffee:hover .plus {
+    transform: rotate(-90deg);
+}
+
+.coffee-stain {
+    width: 300px;
+    position: absolute;
+    top: 20px;
+    right: -52px;
+}
+
+.coffee-stain-2 {
+    width: 350px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}
+
+.modal-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.161);
+    backdrop-filter: blur(4px);
+    transition: opacity ease .3s;
+    opacity: 0;
+    pointer-events: none;
+}
+.modal-open .modal-bg {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal {
+    width: 100%;
+    max-width: 500px;
+    min-height: 300px;
+    background-color: var(--bg-color);
+    position: relative;
+    border: 1px solid var(--grey);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all ease .3s;
+    opacity: 0;
+    transform: translateY(100px);
+}
+
+.modal-open .modal {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+@media screen and (max-width: 768px) {
+    .coffee-card {
+        width: 100%;
+    }
 }
