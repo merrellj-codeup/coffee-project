@@ -134,6 +134,10 @@ function filterRenderedCoffees(e) {
 }
 
 // IIFE that runs when page loads
+// IIFE = Immediately Invoked Function Expression
+/* IIFE's are used to represent the main controller for a page and to prevent
+    variables from cluttering the global namespace
+*/
 (()=>{
     // initial render
     updateCoffees(coffees);
