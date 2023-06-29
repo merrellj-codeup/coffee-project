@@ -2,7 +2,7 @@ import { coffees } from "./coffeelist.js";
 
 // Node variables
 const roastToggles = document.querySelectorAll(".selection");
-const roastSelection = document.querySelector(".selection.active");
+let roastSelection = document.querySelector(".selection.active");
 const tbody = document.querySelector("#coffees");
 const addCoffee = document.querySelector("#add-coffee");
 const searchInput = document.querySelector("#search");
@@ -140,7 +140,7 @@ function filterRenderedCoffees(e) {
 
     // event listeners for roast selection
     roastToggles.forEach(function (toggle) {
-    toggle.addEventListener("click", updateRoastSelection);
+        toggle.addEventListener("click", updateRoastSelection);
     });
 
     // event listener for search input
@@ -209,5 +209,5 @@ function filterRenderedCoffees(e) {
         },
     ],
     });
-    
+
 })();
