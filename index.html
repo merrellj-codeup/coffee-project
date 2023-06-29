@@ -99,23 +99,41 @@
                 </div>
             </div>
             <div class="row">
-                <div class="column gap-10">
-                    <div class="input-wrapper">
-                        <input type="text" id="name" placeholder="Name">
+                <form class="column gap-10" id="coffee-form">
+                    <label class="input-wrapper">
+                        <span>Name</span>
+                        <input type="text" id="name" placeholder="Name" name="name" required>
+                    </label>
+                    <div class="radio-group" required>
+                        <h3>Roast</h3>
+                        <label class="radio">
+                            <input type="radio" name="roast" value="light">
+                            <span>Light</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="roast" value="medium">
+                            <span>Medium</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="roast" value="dark">
+                            <span>Dark</span>
+                        </label>
                     </div>
-                    <div class="input-wrapper">
-                        <input type="text" id="roast" placeholder="Roast">
-                    </div>
-                    <div class="input-wrapper">
-                        <input type="formattedNumber" id="price" placeholder="Price">
-                    </div>
+                    <label class="input-wrapper" required>
+                        <span>Price</span>
+                        <input type="formattedNumber" id="price" placeholder="Price" name="price">
+                    </label>
+                    <label class="input-wrapper">
+                        <span>Description</span>
+                        <textarea id="price" name="description" placeholder="Add a description"></textarea>
+                    </label>
                     <button type="submit" class="btn" id="submit-coffee">Submit</button>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.6.1/imask.min.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
