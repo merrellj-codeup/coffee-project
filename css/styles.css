@@ -25,6 +25,7 @@ h1 {
 .page-wrapper {
     position: relative;
     background: #EBE8DD;
+    overflow-x: hidden;
 }
 .page-wrapper.modal-open {
     overflow: hidden;
