@@ -1,8 +1,9 @@
 import { coffees } from "./coffeelist.js";
 
-let roastToggles = document.querySelectorAll(".selection");
-let roastSelection = document.querySelector(".selection.active");
-let tbody = document.querySelector("#coffees");
+// Node variables
+const roastToggles = document.querySelectorAll(".selection");
+const roastSelection = document.querySelector(".selection.active");
+const tbody = document.querySelector("#coffees");
 const addCoffee = document.querySelector("#add-coffee");
 const searchInput = document.querySelector("#search");
 const pageWrapper = document.querySelector(".page-wrapper");
@@ -11,6 +12,7 @@ const submitCoffee = document.querySelector("#submit-coffee");
 const priceInput = document.querySelector("#price");
 const coffeeForm = document.querySelector("#coffee-form");
 
+// function definition: takes a coffee object and returns an html string
 function renderCoffee(coffee) {
   let coffeeImage;
   switch (coffee.roast.toLowerCase()) {
@@ -68,6 +70,7 @@ function renderCoffee(coffee) {
   return html;
 }
 
+// function definition: takes an array of coffee objects and returns an html string
 function renderCoffees(coffees) {
   let html = "";
   for (let i = coffees.length - 1; i >= 0; i--) {
@@ -76,6 +79,7 @@ function renderCoffees(coffees) {
   return html;
 }
 
+// function definition: updates the coffees displayed on the page
 function updateCoffees() {
   let selectedRoast = roastSelection.innerText.toLowerCase();
   let filteredCoffees = [];
@@ -98,6 +102,7 @@ function updateCoffees() {
   });
 }
 
+// function definition: updates the roast selection
 function updateRoastSelection(e) {
   roastSelection.classList.remove("active");
   roastSelection = e.target;
@@ -112,6 +117,7 @@ function updateRoastSelection(e) {
   }, 200);
 }
 
+// function definition: filters rendered coffees based on search input
 function filterRenderedCoffees(e) {
   const coffeeCards = document.querySelectorAll(".coffee-card");
   const searchValue = searchInput.value.toLowerCase();
@@ -127,68 +133,81 @@ function filterRenderedCoffees(e) {
   });
 }
 
-updateCoffees(coffees);
+// IIFE that runs when page loads
+(()=>{
+    // initial render
+    updateCoffees(coffees);
 
-roastToggles.forEach(function (toggle) {
-  toggle.addEventListener("click", updateRoastSelection);
-});
+    // event listeners for roast selection
+    roastToggles.forEach(function (toggle) {
+    toggle.addEventListener("click", updateRoastSelection);
+    });
 
-searchInput.addEventListener("input", filterRenderedCoffees);
+    // event listener for search input
+    searchInput.addEventListener("input", filterRenderedCoffees);
 
-addCoffee.addEventListener("click", function (e) {
-  e.preventDefault();
-  pageWrapper.classList.toggle("modal-open");
-});
-modalBg.addEventListener("click", function (e) {
-  e.preventDefault();
-  pageWrapper.classList.toggle("modal-open");
-});
-submitCoffee.addEventListener("click", function (e) {
-  // prevent form from submitting, but still validate
-  e.preventDefault();
-  // get form data
-  let coffeeFormData = new FormData(coffeeForm);
-  // create coffee object from form data
-  let coffee = {};
-  coffee.name = coffeeFormData.get("name");
-  if (!coffee.name) {
-    alert("Please enter a coffee name");
-    return;
-  }
-  coffee.roast = coffeeFormData.get("roast");
-  if (!coffee.roast) {
-    alert("Please select a roast");
-    return;
-  }
-  coffee.price = coffeeFormData.get("price").replace("$", "");
-  if (!coffee.price) {
-    alert("Please enter a price");
-    return;
-  }
-  coffee.description = coffeeFormData.get("description");
-  coffees.push(coffee);
-  updateCoffees();
-  coffeeForm.reset();
+    // event listeners for modal popup
+    addCoffee.addEventListener("click", function (e) {
+    e.preventDefault();
+    pageWrapper.classList.toggle("modal-open");
+    });
 
-  pageWrapper.classList.toggle("modal-open");
-});
+    // event listeners for modal close
+    modalBg.addEventListener("click", function (e) {
+    e.preventDefault();
+    pageWrapper.classList.toggle("modal-open");
+    });
 
-var currencyMask = IMask(priceInput, {
-  mask: [
-    { mask: "" },
-    {
-      mask: "$num",
-      lazy: false,
-      blocks: {
-        num: {
-          mask: Number,
-          scale: 2,
-          thousandsSeparator: ",",
-          padFractionalZeros: true,
-          radix: ".",
-          mapToRadix: ["."],
+    // event listener for submitting a new coffee
+    submitCoffee.addEventListener("click", function (e) {
+    // prevent form from submitting, but still validate
+    e.preventDefault();
+    // get form data
+    let coffeeFormData = new FormData(coffeeForm);
+    // create coffee object from form data
+    let coffee = {};
+    coffee.name = coffeeFormData.get("name");
+    if (!coffee.name) {
+        alert("Please enter a coffee name");
+        return;
+    }
+    coffee.roast = coffeeFormData.get("roast");
+    if (!coffee.roast) {
+        alert("Please select a roast");
+        return;
+    }
+    coffee.price = coffeeFormData.get("price").replace("$", "");
+    if (!coffee.price) {
+        alert("Please enter a price");
+        return;
+    }
+    coffee.description = coffeeFormData.get("description");
+    coffees.push(coffee);
+    updateCoffees();
+    coffeeForm.reset();
+
+    pageWrapper.classList.toggle("modal-open");
+    });
+
+    // event listener for price input to add currency mask
+    var currencyMask = IMask(priceInput, {
+    mask: [
+        { mask: "" },
+        {
+        mask: "$num",
+        lazy: false,
+        blocks: {
+            num: {
+            mask: Number,
+            scale: 2,
+            thousandsSeparator: ",",
+            padFractionalZeros: true,
+            radix: ".",
+            mapToRadix: ["."],
+            },
         },
-      },
-    },
-  ],
-});
+        },
+    ],
+    });
+    
+})();
