@@ -82,27 +82,27 @@ function renderCoffees(coffees) {
 // function definition: updates the coffees displayed on the page
 function updateCoffees() {
   let selectedRoast = roastSelection.innerText.toLowerCase();
-  let filteredCoffees = [];
-  if (selectedRoast === "all") {
-    filteredCoffees = coffees;
-  } else {
-    coffees.forEach(function (coffee) {
-      if (coffee.roast === selectedRoast) {
-        filteredCoffees.push(coffee);
-      }
+  let filteredCoffees = coffees;
+  if (selectedRoast !== "all") {
+    filteredCoffees = coffees.filter(coffee => coffee.roast === selectedRoast);
+  }
+  if (searchInput.value) {
+    filteredCoffees = filteredCoffees.filter(coffee => {
+        const coffeeName = coffee.name.toLowerCase();
+        const searchValue = searchInput.value.toLowerCase();
+        return coffeeName.includes(searchValue);
     });
   }
   tbody.innerHTML = renderCoffees(filteredCoffees);
   requestAnimationFrame(function () {
     const coffeeCards = document.querySelectorAll(".coffee-card");
-    filterRenderedCoffees();
     coffeeCards.forEach(function (card) {
       card.classList.remove("fade-out");
     });
   });
 }
 
-// function definition: updates the roast selection
+// function definition: updates the roast selection in the view and calls updateCoffees()
 function updateRoastSelection(e) {
   roastSelection.classList.remove("active");
   roastSelection = e.target;
@@ -117,21 +117,6 @@ function updateRoastSelection(e) {
   }, 200);
 }
 
-// function definition: filters rendered coffees based on search input
-function filterRenderedCoffees(e) {
-  const coffeeCards = document.querySelectorAll(".coffee-card");
-  const searchValue = searchInput.value.toLowerCase();
-  coffeeCards.forEach(function (card) {
-    const coffeeName = card
-      .querySelector(".coffee-name")
-      .innerText.toLowerCase();
-    if (coffeeName.includes(searchValue)) {
-      card.classList.remove("hidden");
-    } else {
-      card.classList.add("hidden");
-    }
-  });
-}
 
 // IIFE that runs when page loads
 // IIFE = Immediately Invoked Function Expression
@@ -139,8 +124,9 @@ function filterRenderedCoffees(e) {
     variables from cluttering the global namespace
 */
 (()=>{
-    // initial render
-    updateCoffees(coffees);
+    
+    // initial render of coffee cards
+    // updateCoffees(coffees);
 
     // event listeners for roast selection
     roastToggles.forEach(function (toggle) {
@@ -148,7 +134,7 @@ function filterRenderedCoffees(e) {
     });
 
     // event listener for search input
-    searchInput.addEventListener("input", filterRenderedCoffees);
+    searchInput.addEventListener("input", updateCoffees);
 
     // event listeners for modal popup
     addCoffee.addEventListener("click", function (e) {
