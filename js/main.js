@@ -93,7 +93,21 @@ function updateCoffees() {
         return coffeeName.includes(searchValue);
     });
   }
+  // alphabetically sort coffees by coffee.name
+    filteredCoffees.sort((a, b) => {
+        const coffeeA = a.name.toLowerCase();
+        const coffeeB = b.name.toLowerCase();
+        if (coffeeA < coffeeB) {
+            return 1;
+        }
+        if (coffeeA > coffeeB) {
+            return -1;
+        }
+        return 0;
+    });
+    // insert html string into tbody
   tbody.innerHTML = renderCoffees(filteredCoffees);
+    // wait for DOM to update, then fade in coffee cards with css transition
   requestAnimationFrame(function () {
     const coffeeCards = document.querySelectorAll(".coffee-card");
     coffeeCards.forEach(function (card) {
