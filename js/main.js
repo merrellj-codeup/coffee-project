@@ -126,7 +126,7 @@ function updateRoastSelection(e) {
 (()=>{
     
     // initial render of coffee cards
-    // updateCoffees(coffees);
+    updateCoffees(coffees);
 
     // event listeners for roast selection
     roastToggles.forEach(function (toggle) {
