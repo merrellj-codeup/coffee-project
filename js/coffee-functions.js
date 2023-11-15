@@ -207,11 +207,3 @@ export const registerFilterEvents = () => {
 		}, 300)
 	);
 };
-
-export const handleModalBtnClick = (e) => {
-	const hasModal = document.querySelector(".modal-container");
-	if (hasModal) {
-		return;
-	}
-	renderModalElement();
-};
