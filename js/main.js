@@ -1,217 +1,194 @@
-import { coffees } from "./coffeelist.js";
+import { coffees } from "../data/coffees.js";
+import { convertToCurrency, debounce } from "./utils.js";
 
-// Node variables
-const roastToggles = document.querySelectorAll(".selection");
-let roastSelection = document.querySelector(".selection.active");
-const tbody = document.querySelector("#coffees");
-const addCoffee = document.querySelector("#add-coffee");
-const searchInput = document.querySelector("#search");
-const pageWrapper = document.querySelector(".page-wrapper");
-const modalBg = document.querySelector(".modal-bg");
-const submitCoffee = document.querySelector("#submit-coffee");
-const priceInput = document.querySelector("#price");
-const coffeeForm = document.querySelector("#coffee-form");
+const renderCoffeeElement = (coffee) => {
+	const coffeeElement = document.createElement("div");
+	coffeeElement.classList.add("coffee-card", "col-12", "col-lg-6", "d-flex", "gap-2");
+	let coffeeImage;
+	switch (coffee.roast.toLowerCase()) {
+		case "light":
+			coffeeImage = "images/light-roast.jpeg";
+			break;
+		case "medium":
+			coffeeImage = "images/medium-roast.jpeg";
+			break;
+		case "dark":
+			coffeeImage = "images/dark-roast.webp";
+			break;
+		default:
+			coffeeImage = "https://via.placeholder.com/84x70?";
+	}
+	let coffeePrice = coffee.price ? convertToCurrency(coffee.price) : convertToCurrency(5);
+	const coffeeDesc = coffee.description ? coffee.description : "Lorem ipsum dolor sit amet, consectetur adipisicing elit.";
 
-// function definition: takes a coffee object and returns an html string
-function renderCoffee(coffee) {
-  let coffeeImage;
-  switch (coffee.roast.toLowerCase()) {
-    case "light":
-      coffeeImage = "images/light-roast.jpeg";
-      break;
-    case "medium":
-      coffeeImage = "images/medium-roast.jpeg";
-      break;
-    case "dark":
-      coffeeImage = "images/dark-roast.webp";
-      break;
-    default:
-      coffeeImage = "https://via.placeholder.com/84x70?";
-  }
-  let coffeePrice = coffee.price ? coffee.price : 5;
-  // if coffee price ends with .00, remove it
-  if (coffeePrice.toString().endsWith(".00")) {
-    coffeePrice = coffeePrice.slice(0, -3);
-  }
-  const coffeeDesc = coffee.description
-    ? coffee.description
-    : "Lorem ipsum dolor sit amet, consectetur adipisicing elit.";
-  let html = `
-        <div class="coffee-card fade-out">
-            <div class="column shrink">
-                <div class="img-wrapper">
-                    <img src="${coffeeImage}" alt="Coffee image">
+	coffeeElement.innerHTML = `
+        <div class="d-flex flex-column flex-shrink-1">
+            <div class="img-wrapper">
+                <img src="${coffeeImage}" alt="Coffee image">
+            </div>
+        </div>
+        <div class="d-flex flex-grow-1 flex-column justify-content-center">
+            <div class="d-flex align-items-end">
+                <div class="d-flex flex-column flex-shrink-1 text-nowrap">
+                    <h3 class="coffee-name">${coffee.name}</h3>
+                </div>
+                <div class="d-flex flex-column flex-grow-1 dotted"></div>
+                <div class="d-flex flex-column flex-shrink-1 text-nowrap">
+                    <h3 class="coffee-price">${coffeePrice}</h3>
                 </div>
             </div>
-            <div class="column justify-center">
-                <div class="row no-gap align-bottom">
-                    <div class="column shrink no-wrap">
-                        <h3 class="coffee-name">${coffee.name}</h3>
-                    </div>
-                    <div class="column dotted"></div>
-                    <div class="column shrink">
-                        <h3 class="coffee-price">$${coffeePrice}</h3>
-                    </div>
+            <div class="d-flex">
+                <div class="d-flex flex-column">
+                    <p class="coffee-roast">${coffee.roast}</p>
                 </div>
-                <div class="row">
-                    <div class="column">
-                        <p class="coffee-roast">${coffee.roast}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column">
-                        <p class="coffee-description">${coffeeDesc}</p>
-                    </div>
+            </div>
+            <div class="d-flex">
+                <div class="d-flex flex-column">
+                    <p class="coffee-description">${coffeeDesc}</p>
                 </div>
             </div>
         </div>
     `;
 
-  return html;
-}
+	return coffeeElement;
+};
 
-// function definition: takes an array of coffee objects and returns an html string
-function renderCoffees(coffees) {
-  let html = "";
-  for (let i = coffees.length - 1; i >= 0; i--) {
-    html += renderCoffee(coffees[i]);
-  }
-  return html;
-}
+const updateCoffees = (coffees) => {
+	const coffeeContainer = document.querySelector("#coffees");
+	coffeeContainer.classList.add("loading");
+	setTimeout(() => {
+		coffeeContainer.innerHTML = "";
+		coffeeContainer.classList.remove("loading");
+		let filteredCoffees = coffees;
+		const roastFilter = document.querySelector("input[name=roast]:checked").value;
+		filteredCoffees = filteredCoffees.filter((coffee) => {
+			if (roastFilter === "all") {
+				return true;
+			}
+			return coffee.roast.toLowerCase() === roastFilter.toLowerCase();
+		});
+		const searchFilter = document.querySelector("#search").value;
+		filteredCoffees = filteredCoffees.filter((coffee) => {
+			if (searchFilter === "") {
+				return true;
+			}
+			return coffee.name.toLowerCase().includes(searchFilter.toLowerCase());
+		});
+		const coffeesFragment = document.createDocumentFragment();
+		for (let coffee of filteredCoffees) {
+			coffeesFragment.appendChild(renderCoffeeElement(coffee));
+		}
+		coffeeContainer.appendChild(coffeesFragment);
+	}, 300);
+};
 
-// function definition: updates the coffees displayed on the page
-function updateCoffees() {
-  let selectedRoast = roastSelection.innerText.toLowerCase();
-  let filteredCoffees = coffees;
-  if (selectedRoast !== "all") {
-    filteredCoffees = coffees.filter(coffee => coffee.roast === selectedRoast);
-  }
-  if (searchInput.value) {
-    filteredCoffees = filteredCoffees.filter(coffee => {
-        const coffeeName = coffee.name.toLowerCase();
-        const searchValue = searchInput.value.toLowerCase();
-        return coffeeName.includes(searchValue);
-    });
-  }
-  // alphabetically sort coffees by coffee.name
-    filteredCoffees.sort((a, b) => {
-        const coffeeA = a.name.toLowerCase();
-        const coffeeB = b.name.toLowerCase();
-        if (coffeeA < coffeeB) {
-            return 1;
-        }
-        if (coffeeA > coffeeB) {
-            return -1;
-        }
-        return 0;
-    });
-    // insert html string into tbody
-  tbody.innerHTML = renderCoffees(filteredCoffees);
-    // wait for DOM to update, then fade in coffee cards with css transition
-  requestAnimationFrame(function () {
-    const coffeeCards = document.querySelectorAll(".coffee-card");
-    coffeeCards.forEach(function (card) {
-      card.classList.remove("fade-out");
-    });
-  });
-}
+const addCoffee = (e) => {};
 
-// function definition: updates the roast selection in the view and calls updateCoffees()
-function updateRoastSelection(e) {
-  roastSelection.classList.remove("active");
-  roastSelection = e.target;
-  roastSelection.classList.add("active");
-  const coffeeCards = document.querySelectorAll(".coffee-card");
-  // fade out all coffee cards, THEN update coffees, THEN fade in all coffee cards
-  coffeeCards.forEach(function (card) {
-    card.classList.add("fade-out");
-  });
-  setTimeout(function () {
-    updateCoffees();
-  }, 200);
-}
+const renderModalElement = () => {
+	const modalElement = document.createElement("div");
+	modalElement.classList.add("modal-container");
+	modalElement.innerHTML = `
+        <div class="modal-bg"></div>
+        <div class="modal">
+            <div class="row">
+                <div class="column text-center align-center gap-20">
+                    <h1>Add New Coffee</h1>
+                    <div class="title-underline">
+                        <div class="title-underline-line line-1"></div>
+                        <div class="title-underline-line line-2"></div>
+                        <div class="title-underline-line line-3"></div>
+                        <div class="title-underline-line line-4"></div>
+                        <div class="coffee-bean-icons">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 191.68 252" fill="currentColor" class="bean-icon">
+                                <g>
+                                    <path d="M62.27,5.99c2.65-1.38,5.91-.62,7.67,1.79,12.71,17.64,27.55,45.81,16.8,97.66-13.11,63.17-6.89,106.4,14,137.26h0c1.25,1.81,1.39,4.16,.36,6.11-1.02,1.95-3.04,3.17-5.23,3.18C42.95,252,0,195.16,0,125.05,0,70.45,25.98,23.97,62.27,6h0Z"/>
+                                    <path d="M106.06,7.79c-.62-2.08-.09-4.33,1.41-5.9,1.49-1.57,3.71-2.23,5.82-1.71,44.8,10.81,78.4,62.61,78.4,124.88,0,46.7-19.04,87.47-47.38,109.48h0c-2.38,1.9-5.8,1.76-8.01-.34-26.94-24.98-37.63-62.55-28-125.44,6.38-40.77,5.54-74.54-2.24-100.96h0Z"/>
+                                </g>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 191.68 252" fill="currentColor" class="bean-icon">
+                                <g>
+                                    <path d="M62.27,5.99c2.65-1.38,5.91-.62,7.67,1.79,12.71,17.64,27.55,45.81,16.8,97.66-13.11,63.17-6.89,106.4,14,137.26h0c1.25,1.81,1.39,4.16,.36,6.11-1.02,1.95-3.04,3.17-5.23,3.18C42.95,252,0,195.16,0,125.05,0,70.45,25.98,23.97,62.27,6h0Z"/>
+                                    <path d="M106.06,7.79c-.62-2.08-.09-4.33,1.41-5.9,1.49-1.57,3.71-2.23,5.82-1.71,44.8,10.81,78.4,62.61,78.4,124.88,0,46.7-19.04,87.47-47.38,109.48h0c-2.38,1.9-5.8,1.76-8.01-.34-26.94-24.98-37.63-62.55-28-125.44,6.38-40.77,5.54-74.54-2.24-100.96h0Z"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab, atque cum cupiditate debitis delectus deleniti dignissimos magni maxime modi molestiae.</p>
+                </div>
+            </div>
+            <div class="row">
+                <form class="column gap-10" id="coffee-form">
+                    <label class="input-wrapper">
+                        <span>Name</span>
+                        <input type="text" id="name" placeholder="Name" name="name" required>
+                    </label>
+                    <div class="radio-group" required>
+                        <h3>Roast</h3>
+                        <label class="radio">
+                            <input type="radio" name="roast" value="light">
+                            <span>Light</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="roast" value="medium">
+                            <span>Medium</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="roast" value="dark">
+                            <span>Dark</span>
+                        </label>
+                    </div>
+                    <label class="input-wrapper" required>
+                        <span>Price</span>
+                        <input type="formattedNumber" id="price" placeholder="Price" name="price">
+                    </label>
+                    <label class="input-wrapper">
+                        <span>Description</span>
+                        <textarea id="price" name="description" placeholder="Add a description"></textarea>
+                    </label>
+                    <button type="submit" class="btn" id="submit-coffee">Submit</button>
+                </form>
+            </div>
+        </div>
+    `;
+	const modalBg = modalElement.querySelector(".modal-bg");
+	modalBg.addEventListener("click", () => {
+		modalElement.classList.add("hide");
+		modalElement.addEventListener("transitionend", () => {
+			modalElement.remove();
+		});
+	});
+	document.querySelector(".page-wrapper").appendChild(modalElement);
+};
 
+const registerFilterEvents = () => {
+	const roastRadios = document.querySelectorAll("input[name=roast]");
+	for (let roastRadio of roastRadios) {
+		roastRadio.addEventListener("change", (e) => {
+			updateCoffees(coffees);
+		});
+	}
 
-// IIFE that runs when page loads
-// IIFE = Immediately Invoked Function Expression
-/* IIFE's are used to represent the main controller for a page and to prevent
-    variables from cluttering the global namespace
-*/
-(()=>{
-    
-    // initial render of coffee cards
-    updateCoffees(coffees);
+	const searchFilter = document.querySelector("#search");
+	searchFilter.addEventListener(
+		"input",
+		debounce((e) => {
+			updateCoffees(coffees);
+		}, 300)
+	);
+};
 
-    // event listeners for roast selection
-    roastToggles.forEach(function (toggle) {
-        toggle.addEventListener("click", updateRoastSelection);
-    });
+const handleModalBtnClick = (e) => {
+	const hasModal = document.querySelector(".modal-container");
+	if (hasModal) {
+		return;
+	}
+	renderModalElement();
+};
 
-    // event listener for search input
-    searchInput.addEventListener("input", updateCoffees);
-
-    // event listeners for modal popup
-    addCoffee.addEventListener("click", function (e) {
-    e.preventDefault();
-    pageWrapper.classList.toggle("modal-open");
-    });
-
-    // event listeners for modal close
-    modalBg.addEventListener("click", function (e) {
-    e.preventDefault();
-    pageWrapper.classList.toggle("modal-open");
-    });
-
-    // event listener for submitting a new coffee
-    submitCoffee.addEventListener("click", function (e) {
-    // prevent form from submitting, but still validate
-    e.preventDefault();
-    // get form data
-    let coffeeFormData = new FormData(coffeeForm);
-    // create coffee object from form data
-    let coffee = {};
-    coffee.name = coffeeFormData.get("name");
-    if (!coffee.name) {
-        alert("Please enter a coffee name");
-        return;
-    }
-    coffee.roast = coffeeFormData.get("roast");
-    if (!coffee.roast) {
-        alert("Please select a roast");
-        return;
-    }
-    coffee.price = coffeeFormData.get("price").replace("$", "");
-    if (!coffee.price) {
-        alert("Please enter a price");
-        return;
-    }
-    coffee.description = coffeeFormData.get("description");
-    coffees.push(coffee);
-    updateCoffees();
-    coffeeForm.reset();
-
-    pageWrapper.classList.toggle("modal-open");
-    });
-
-    // event listener for price input to add currency mask
-    var currencyMask = IMask(priceInput, {
-    mask: [
-        { mask: "" },
-        {
-        mask: "$num",
-        lazy: false,
-        blocks: {
-            num: {
-            mask: Number,
-            scale: 2,
-            thousandsSeparator: ",",
-            padFractionalZeros: true,
-            radix: ".",
-            mapToRadix: ["."],
-            },
-        },
-        },
-    ],
-    });
-
+// MAIN
+(() => {
+	const coffeeModalBtn = document.querySelector("#add-coffee");
+	updateCoffees(coffees);
+	registerFilterEvents();
+	coffeeModalBtn.addEventListener("click", handleModalBtnClick);
 })();

@@ -1,0 +1,266 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css") layer(framework);
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Teko:wght@300;400;500;600;700&display=swap");
+
+:root {
+	--primary-color: #000000;
+	--secondary-color: #bd9459;
+	--grey: #333;
+	--bg-color: #ebe8dd;
+}
+html {
+	width: 100dvw;
+	overflow-x: hidden;
+}
+body {
+	font-family: "Montserrat", sans-serif;
+	font-size: 14px;
+	line-height: 1;
+	color: var(--grey);
+	background-color: var(--bg-color);
+	scrollbar-gutter: stable both-edges;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Teko", sans-serif;
+	font-weight: 500;
+	text-transform: uppercase;
+	line-height: 1;
+	margin: 0;
+}
+h1 {
+	font-size: 2.2rem;
+	line-height: 1;
+}
+h3 {
+	font-size: 1.5rem;
+	line-height: 1;
+}
+p {
+	font-size: 1rem;
+	margin: 0;
+}
+.page-wrapper {
+	display: flex;
+	flex-direction: column;
+	height: 100dvh;
+	width: 100dvw;
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: auto;
+	scrollbar-gutter: stable both-edges;
+}
+.coffee-bean-icons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--secondary-color);
+	.bean-icon {
+		width: 14px;
+	}
+	.bean-icon:first-child {
+		transform: rotate(-38deg);
+		position: relative;
+		z-index: 2;
+	}
+	.bean-icon:last-child {
+		transform: rotate(15deg);
+		position: relative;
+		z-index: 1;
+		margin-left: -5px;
+		margin-top: -5px;
+	}
+}
+.title-underline {
+	width: 180px;
+	position: relative;
+}
+.title-underline-line {
+	position: absolute;
+	background: radial-gradient(circle, #000000 0%, #00000000 100%);
+	height: 2px;
+	&.line-1 {
+		left: 0;
+		top: 6px;
+		width: 50px;
+	}
+	&.line-2 {
+		left: 0;
+		bottom: 6px;
+		width: 65px;
+	}
+	&.line-3 {
+		right: 0;
+		top: 6px;
+		width: 50px;
+	}
+	&.line-4 {
+		right: 0;
+		bottom: 6px;
+		width: 65px;
+	}
+}
+.subtitle {
+	max-width: 600px;
+	color: #6b696a;
+	font-weight: 500;
+	line-height: 1.2;
+}
+.filters {
+	& input {
+		display: none;
+	}
+	& label {
+		padding: 10px 20px;
+		border: 1px solid var(--grey);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all ease 0.3s;
+		&:hover {
+			background: var(--secondary-color);
+			color: #fff;
+		}
+		&:has(input:checked) {
+			background: var(--secondary-color);
+			color: #fff;
+		}
+	}
+}
+@keyframes fadein {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+.coffee-card {
+	animation: fadein 0.5s ease-in-out;
+	transition: opacity ease 0.3s;
+	& p {
+		font-size: 1rem;
+		&.coffee-description {
+			font-size: 0.8rem;
+			font-style: italic;
+			margin-top: 4px;
+			line-height: 1.2;
+		}
+	}
+}
+#coffees.loading .coffee-card {
+	opacity: 0;
+}
+.img-wrapper {
+	height: 70px;
+	aspect-ratio: 1/1;
+	border-radius: 9999px;
+	overflow: hidden;
+}
+.img-wrapper img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.dotted {
+	border-bottom: 1px dotted #000000;
+	position: relative;
+	top: -3px;
+	margin: 0 5px;
+}
+.form-control {
+	--bs-body-bg: var(--bg-color);
+	--bs-border-color: var(--grey);
+	&:focus {
+		box-shadow: 0 0 0 0.25rem rgb(189 148 89 / 38%);
+		border-color: var(--secondary-color);
+	}
+}
+
+.btn {
+	padding: 10px 11.5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	gap: 15px;
+	border: none;
+	outline: none;
+	background-color: var(--secondary-color);
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+
+.btn .plus {
+	font-size: 35px;
+	line-height: 18px;
+	transition: transform ease 0.5s;
+	font-weight: 200;
+}
+
+.btn.add-coffee {
+	border-radius: 9999px;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	overflow: hidden;
+	transition: width ease 0.3s;
+	width: 42px;
+	white-space: nowrap;
+	justify-content: start;
+}
+.btn.add-coffee:hover {
+	width: 174px;
+}
+.btn.add-coffee:hover .plus {
+	transform: rotate(-90deg);
+}
+
+.modal-container {
+	display: flex;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	align-items: start;
+	justify-content: center;
+	z-index: 9;
+	padding: 30px;
+	overflow: auto;
+	.modal-bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.161);
+		backdrop-filter: blur(4px);
+		transition: opacity ease 0.3s;
+	}
+	.modal {
+		width: 100%;
+		max-width: 500px;
+		min-height: 300px;
+		background-color: var(--bg-color);
+		position: relative;
+		border: 1px solid var(--grey);
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		transition: all ease 0.3s;
+	}
+	&.hide {
+		.modal-bg {
+			opacity: 0;
+		}
+		.modal {
+			opacity: 0;
+			transform: translateY(-300px);
+		}
+	}
+}
