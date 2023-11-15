@@ -1,10 +1,12 @@
 import { coffees } from "../data/coffees.js";
-import { updateCoffees, registerFilterEvents, handleModalBtnClick } from "./coffee-functions.js";
+import { registerCoffeesToLocalStorage, updateCoffees, registerFilterEvents, handleModalBtnClick } from "./coffee-functions.js";
 
 // MAIN
 (() => {
+	registerCoffeesToLocalStorage(coffees);
+	updateCoffees();
+	registerFilterEvents();
+
 	const coffeeModalBtn = document.querySelector("#add-coffee");
-	updateCoffees(coffees);
-	registerFilterEvents(coffees);
 	coffeeModalBtn.addEventListener("click", handleModalBtnClick);
 })();

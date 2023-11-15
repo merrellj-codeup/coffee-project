@@ -1,5 +1,12 @@
 import { convertToCurrency, debounce } from "./utils.js";
 
+export const registerCoffeesToLocalStorage = (coffees) => {
+	if (localStorage.getItem("coffees")) {
+		return;
+	}
+	localStorage.setItem("coffees", JSON.stringify(coffees));
+};
+
 export const renderCoffeeElement = (coffee) => {
 	const coffeeElement = document.createElement("div");
 	coffeeElement.classList.add("coffee-card", "col-12", "col-lg-6", "d-flex", "gap-2");
@@ -52,7 +59,9 @@ export const renderCoffeeElement = (coffee) => {
 	return coffeeElement;
 };
 
-export const updateCoffees = (coffees) => {
+export const updateCoffees = () => {
+	// get coffees from local storage
+	const coffees = JSON.parse(localStorage.getItem("coffees"));
 	const coffeeContainer = document.querySelector("#coffees");
 	coffeeContainer.classList.add("loading");
 	setTimeout(() => {
@@ -81,8 +90,6 @@ export const updateCoffees = (coffees) => {
 	}, 300);
 };
 
-export const addCoffee = (e) => {};
-
 export const renderModalElement = () => {
 	const modalElement = document.createElement("div");
 	modalElement.classList.add("modal-container");
@@ -90,7 +97,7 @@ export const renderModalElement = () => {
         <div class="modal-bg"></div>
         <div class="modal">
             <div class="row">
-                <div class="column text-center align-center gap-20">
+                <div class="col d-flex flex-column text-center align-items-center gap-4">
                     <h1>Add New Coffee</h1>
                     <div class="title-underline">
                         <div class="title-underline-line line-1"></div>
@@ -116,12 +123,12 @@ export const renderModalElement = () => {
                 </div>
             </div>
             <div class="row">
-                <form class="column gap-10" id="coffee-form">
-                    <label class="input-wrapper">
-                        <span>Name</span>
-                        <input type="text" id="name" placeholder="Name" name="name" required>
+                <form class="col d-flex flex-column gap-3" id="coffee-form">
+                    <label class="form-group">
+                        <h3>Name</h3>
+                        <input type="text" id="name" placeholder="Name" name="name" class="form-control" required>
                     </label>
-                    <div class="radio-group" required>
+                    <div class="filters">
                         <h3>Roast</h3>
                         <label class="radio">
                             <input type="radio" name="roast" value="light">
@@ -136,13 +143,13 @@ export const renderModalElement = () => {
                             <span>Dark</span>
                         </label>
                     </div>
-                    <label class="input-wrapper" required>
-                        <span>Price</span>
-                        <input type="formattedNumber" id="price" placeholder="Price" name="price">
+                    <label class="form-group" required>
+                        <h3>Price</h3>
+                        <input type="text" id="price" placeholder="Price" name="price" class="form-control">
                     </label>
                     <label class="input-wrapper">
-                        <span>Description</span>
-                        <textarea id="price" name="description" placeholder="Add a description"></textarea>
+                        <h3>Description</h3>
+                        <textarea id="price" name="description" placeholder="Add a description" class="form-control"></textarea>
                     </label>
                     <button type="submit" class="btn" id="submit-coffee">Submit</button>
                 </form>
@@ -156,10 +163,35 @@ export const renderModalElement = () => {
 			modalElement.remove();
 		});
 	});
+	const coffeeForm = modalElement.querySelector("#coffee-form");
+	coffeeForm.addEventListener("submit", (e) => {
+		e.preventDefault();
+		const coffee = {
+			name: e.target.name.value,
+			roast: e.target.roast.value,
+			price: e.target.price.value,
+			description: e.target.description.value,
+		};
+		console.log(coffee);
+		// add coffee to locale storage
+		const coffees = JSON.parse(localStorage.getItem("coffees"));
+		coffees.push(coffee);
+		localStorage.setItem("coffees", JSON.stringify(coffees));
+		// // update coffees
+		updateCoffees();
+		modalElement.classList.add("hide");
+		modalElement.addEventListener("transitionend", (e) => {
+			if (e.propertyName === "opacity") {
+				modalElement.remove();
+			}
+		});
+	});
 	document.querySelector(".page-wrapper").appendChild(modalElement);
 };
 
-export const registerFilterEvents = (coffees) => {
+export const registerFilterEvents = () => {
+	// get coffees from local storage
+	const coffees = JSON.parse(localStorage.getItem("coffees"));
 	const roastRadios = document.querySelectorAll("input[name=roast]");
 	for (let roastRadio of roastRadios) {
 		roastRadio.addEventListener("change", (e) => {

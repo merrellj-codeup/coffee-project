@@ -7,6 +7,7 @@
 	--grey: #333;
 	--bg-color: #ebe8dd;
 }
+
 html {
 	width: 100dvw;
 	overflow-x: hidden;
@@ -129,14 +130,6 @@ p {
 		}
 	}
 }
-@keyframes fadein {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
 .coffee-card {
 	animation: fadein 0.5s ease-in-out;
 	transition: opacity ease 0.3s;
@@ -239,7 +232,8 @@ p {
 		height: 100vh;
 		background-color: rgba(0, 0, 0, 0.161);
 		backdrop-filter: blur(4px);
-		transition: opacity ease 0.3s;
+		transition: opacity ease 0.5s;
+		animation: fadein 0.5s ease-in-out;
 	}
 	.modal {
 		width: 100%;
@@ -253,6 +247,7 @@ p {
 		flex-direction: column;
 		gap: 20px;
 		transition: all ease 0.3s;
+		animation: slideup 0.2s ease-in-out;
 	}
 	&.hide {
 		.modal-bg {
@@ -262,5 +257,25 @@ p {
 			opacity: 0;
 			transform: translateY(-300px);
 		}
+	}
+}
+
+@keyframes fadein {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes slideup {
+	from {
+		transform: translateY(300px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
 	}
 }
