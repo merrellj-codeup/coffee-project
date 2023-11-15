@@ -11,8 +11,10 @@
 </head>
 
 <body>
+    <img src="./images/coffee-stain.png" alt="coffee-stain" class="coffee-stain">
+    <img src="./images/coffee-stain-2.png" alt="coffee-stain" class="coffee-stain">
     <div class="page-wrapper py-5">
-        <header class="container">
+        <header class="container position-relative">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-5 d-flex flex-column align-items-center text-center gap-4">
                     <h1>Coffee Menu</h1>
@@ -48,9 +50,10 @@
                 </div>
             </div>
         </header>
-        <div class="container py-3 filters">
+        <div class="container position-relative py-3 filters">
             <div class="row justify-content-center">
-                <div class="col-12 col-lg-5 d-flex align-items-center justify-content-between text-center gap-2">
+                <div
+                    class="col-12 col-lg-5 d-flex flex-column flex-sm-column flex-md-row flex-wrap align-items-center justify-content-between text-center gap-2">
                     <label for="all" class="flex-grow-1">
                         <input type="radio" name="roast" id="all" value="all" checked>
                         All
@@ -70,7 +73,7 @@
                 </div>
             </div>
         </div>
-        <div class="container search">
+        <div class="container position-relative search">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-5">
                     <label class="input-group input-group-md">
@@ -79,7 +82,7 @@
                 </div>
             </div>
         </div>
-        <div class="container py-5">
+        <div class="container position-relative py-5">
             <div class="row justify-content-center">
                 <div class="col-12 col-lg-8">
                     <div class="row" id="coffees" style="--bs-gutter-x: 2rem; --bs-gutter-y: 2rem;">
