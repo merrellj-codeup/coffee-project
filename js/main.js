@@ -4,7 +4,6 @@ import { updateCoffees, registerFilterEvents, handleModalBtnClick } from "./coff
 // MAIN
 (() => {
 	const coffeeModalBtn = document.querySelector("#add-coffee");
-	console.log(coffees);
 	updateCoffees(coffees);
 	registerFilterEvents(coffees);
 	coffeeModalBtn.addEventListener("click", handleModalBtnClick);
