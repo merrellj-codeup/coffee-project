@@ -1,10 +1,29 @@
 import { convertToCurrency, debounce } from "./utils.js";
 
+/**
+ * Registers the coffees to local storage
+ * @param {Array} coffees
+ * @returns {void}
+ */
 export const registerCoffeesToLocalStorage = (coffees) => {
 	if (localStorage.getItem("coffees")) {
 		return;
 	}
 	localStorage.setItem("coffees", JSON.stringify(coffees));
+};
+
+export const removeCoffee = (coffeeElement, coffee) => {
+	const coffees = JSON.parse(localStorage.getItem("coffees"));
+	const updatedCoffees = coffees.filter((coffeeItem) => {
+		return coffeeItem.name !== coffee.name;
+	});
+	localStorage.setItem("coffees", JSON.stringify(updatedCoffees));
+	coffeeElement.classList.add("hide");
+	coffeeElement.addEventListener("transitionend", (e) => {
+		if (e.propertyName === "opacity") {
+			updateCoffees();
+		}
+	});
 };
 
 export const renderCoffeeElement = (coffee) => {
@@ -39,8 +58,9 @@ export const renderCoffeeElement = (coffee) => {
                     <h3 class="coffee-name">${coffee.name}</h3>
                 </div>
                 <div class="d-flex flex-column flex-grow-1 dotted"></div>
-                <div class="d-flex flex-column flex-shrink-1 text-nowrap">
+                <div class="d-flex flex-shrink-1 text-nowrap align-items-center gap-1 position-relative">
                     <h3 class="coffee-price">${coffeePrice}</h3>
+                    ${coffee.userGenerated ? `<div class="remove-coffee">x</div>` : ``}
                 </div>
             </div>
             <div class="d-flex">
@@ -55,7 +75,12 @@ export const renderCoffeeElement = (coffee) => {
             </div>
         </div>
     `;
-
+	const removeBtn = coffeeElement.querySelector(".remove-coffee");
+	if (removeBtn) {
+		removeBtn.addEventListener("click", (e) => {
+			removeCoffee(coffeeElement, coffee);
+		});
+	}
 	return coffeeElement;
 };
 
@@ -81,6 +106,15 @@ export const updateCoffees = () => {
 				return true;
 			}
 			return coffee.name.toLowerCase().includes(searchFilter.toLowerCase());
+		});
+		filteredCoffees.sort((a, b) => {
+			if (a.name.toLowerCase() < b.name.toLowerCase()) {
+				return -1;
+			}
+			if (a.name.toLowerCase() > b.name.toLowerCase()) {
+				return 1;
+			}
+			return 0;
 		});
 		const coffeesFragment = document.createDocumentFragment();
 		for (let coffee of filteredCoffees) {
@@ -171,6 +205,7 @@ export const renderModalElement = () => {
 			roast: e.target.roast.value,
 			price: e.target.price.value,
 			description: e.target.description.value,
+			userGenerated: true,
 		};
 		console.log(coffee);
 		// add coffee to locale storage

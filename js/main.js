@@ -1,5 +1,10 @@
 import { coffees } from "../data/coffees.js";
-import { registerCoffeesToLocalStorage, updateCoffees, registerFilterEvents, handleModalBtnClick } from "./coffee-functions.js";
+import {
+	registerCoffeesToLocalStorage,
+	updateCoffees,
+	registerFilterEvents,
+	handleModalBtnClick,
+} from "./coffee-functions.js";
 
 // MAIN
 (() => {
