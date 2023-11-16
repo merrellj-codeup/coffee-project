@@ -2,7 +2,7 @@ import { convertToCurrency, debounce } from "./utils.js";
 
 /**
  * Registers the coffees to local storage
- * @param {Array} coffees
+ * @param {Array} coffees - Array of coffee objects
  * @returns {void}
  */
 export const registerCoffeesToLocalStorage = (coffees) => {
@@ -12,6 +12,11 @@ export const registerCoffeesToLocalStorage = (coffees) => {
 	localStorage.setItem("coffees", JSON.stringify(coffees));
 };
 
+/**
+ * Removes a coffee from the DOM and local storage
+ * @param {Node} coffeeElement - The coffee element to remove from the DOM
+ * @param {Object} coffee - The coffee object to remove from local storage
+ */
 export const removeCoffee = (coffeeElement, coffee) => {
 	const coffees = JSON.parse(localStorage.getItem("coffees"));
 	const updatedCoffees = coffees.filter((coffeeItem) => {
@@ -26,6 +31,16 @@ export const removeCoffee = (coffeeElement, coffee) => {
 	});
 };
 
+/**
+ * Creates and returns a coffee element
+ * @param {Object} coffee - The coffee object to render
+ * @param {string} coffee.name - The coffee name
+ * @param {string} coffee.roast - The coffee roast
+ * @param {string} coffee.price - The coffee price
+ * @param {string} coffee.description - The coffee description
+ * @param {boolean} coffee.userGenerated - Whether the coffee was user generated
+ * @returns {Node} - The coffee element
+ */
 export const renderCoffeeElement = (coffee) => {
 	const coffeeElement = document.createElement("div");
 	coffeeElement.classList.add("coffee-card", "col-12", "col-lg-6", "d-flex", "gap-2");
@@ -84,6 +99,10 @@ export const renderCoffeeElement = (coffee) => {
 	return coffeeElement;
 };
 
+/**
+ * Updates the coffees in the DOM
+ * @returns {void}
+ */
 export const updateCoffees = () => {
 	// get coffees from local storage
 	const coffees = JSON.parse(localStorage.getItem("coffees"));
@@ -124,6 +143,11 @@ export const updateCoffees = () => {
 	}, 300);
 };
 
+/**
+ * Renders the modal element
+ * @returns {void}
+ * @todo Add form validation
+ */
 export const renderModalElement = () => {
 	const modalElement = document.createElement("div");
 	modalElement.classList.add("modal-container");
@@ -224,6 +248,10 @@ export const renderModalElement = () => {
 	document.querySelector(".page-wrapper").appendChild(modalElement);
 };
 
+/**
+ * Registers the filter events
+ * @returns {void}
+ */
 export const registerFilterEvents = () => {
 	// get coffees from local storage
 	const coffees = JSON.parse(localStorage.getItem("coffees"));
@@ -243,6 +271,11 @@ export const registerFilterEvents = () => {
 	);
 };
 
+/**
+ * Handles the modal button click event
+ * @param {Object} e - The event object
+ * @returns {void}
+ */
 export const handleModalBtnClick = (e) => {
 	const hasModal = document.querySelector(".modal-container");
 	if (hasModal) {

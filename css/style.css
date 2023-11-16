@@ -6,6 +6,12 @@
 	--secondary-color: #bd9459;
 	--grey: #333;
 	--bg-color: #ebe8dd;
+	--bs-breakpoint-xs: 0;
+	--bs-breakpoint-sm: 576px;
+	--bs-breakpoint-md: 768px;
+	--bs-breakpoint-lg: 992px;
+	--bs-breakpoint-xl: 1200px;
+	--bs-breakpoint-xxl: 1400px;
 }
 
 html {
@@ -109,6 +115,9 @@ p {
 	color: #6b696a;
 	font-weight: 500;
 	line-height: 1.2;
+	@media (max-width: 768px) {
+		display: none;
+	}
 }
 .filters {
 	& input {
